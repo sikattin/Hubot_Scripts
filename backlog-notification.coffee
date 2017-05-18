@@ -37,6 +37,14 @@ module.exports = (robot) ->
       message = "*Backlog #{label}*\n"
       message += "[#{body.project.projectKey}-#{body.content.key_id}] - "
       message += "#{body.content.summary} _by #{body.createdUser.name}_\n>>> "
+
+      # notificationsに通知したい人が含まれている場合
+      if body.notifications.length > 0
+          message += "to  "
+          for users in body.notifications
+              message += "#{users.user.name},  "
+          message += "\n"
+
       if body.content.comment?.content?
           message += "#{body.content.comment.content}\n"
       message += "#{url}"
