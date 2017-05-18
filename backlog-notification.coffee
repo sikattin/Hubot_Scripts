@@ -11,10 +11,13 @@ module.exports = (robot) ->
     { room } = req.params
     { body } = req
     try
-
+      onlyAddVal = ""
       switch body.type
           when 1
               label = '課題の追加'
+              dueDate = body.content.dueDate
+              assignee = body.content.assignee.name
+              onlyAddVal = "期限日: #{dueDate}\n担当者: #{assignee}\n"
           when 2, 3
               # 「更新」と「コメント」は実際は一緒に使うので、一緒に。
               label = '課題の更新'
@@ -46,7 +49,11 @@ module.exports = (robot) ->
           message += "\n"
 
       if body.content.comment?.content?
-          message += "#{body.content.comment.content}\n"
+          message += "コメント: #{body.content.comment.content}\n"
+
+      # 課題追加時のみ期限日と担当者を入れる
+      if onlyAddVal != ""
+          message += onlyAddVal
       message += "#{url}"
 
       # Slack に投稿
